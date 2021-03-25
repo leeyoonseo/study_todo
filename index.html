@@ -7,14 +7,14 @@
     </head>
 
     <body>
-        <section id="to-do-list">
+        <section id="list-section">
             <h1>CHECK LIST</h1>
 
             <div class="list-contents">
                 <h2 class="hidden">리스트 영역</h2>
 
-                <div class="list">
-                    <div>
+                <div id="todo-list" class="list">
+                    <!-- <div>
                         <input type="checkbox" id="chk-00"/>
                         <label for="chk-00"></label>
                         <span class="item-text">아침 잘 챙겨 먹기</span>
@@ -23,29 +23,7 @@
                             <span class="hidden">글 복사</span>
                             <img src="public/img/icon_copy.png" alt="복사 아이콘" />
                         </button>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" id="chk-00"/>
-                        <label for="chk-00"></label>
-                        <span class="item-text">아침 잘 챙겨 먹기</span>
-
-                        <button class="copy-btn">
-                            <span class="hidden">글 복사</span>
-                            <img src="public/img/icon_copy.png" alt="복사 아이콘" />
-                        </button>
-                    </div>
-
-                    <div>
-                        <input type="checkbox" id="chk-00"/>
-                        <label for="chk-00"></label>
-                        <span class="item-text">아침 잘 챙겨 먹기</span>
-
-                        <button class="copy-btn">
-                            <span class="hidden">글 복사</span>
-                            <img src="public/img/icon_copy.png" alt="복사 아이콘" />
-                        </button>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- <div id="categories-wrap">
@@ -81,17 +59,17 @@
                 </div> -->
             </div>
 
-            <div class="add-list-btn">
-                <button>
+            <div class="add-btn-wrap">
+                <button id="add-btn">
                     +
                     <span class="hidden">추가하기</span>
                 </button>
             </div>
 
-            <div class="popup">
+            <div id="popup" class="popup-wrap">
                 <div class="popup-contents">
                     <h2 class="hidden">팝업</h2>
-                    <button class="popup-close-btn">
+                    <button class="popup-close-btn js-close">
                         <span class="hidden">닫기</span>
                         <img src="public/img/icon_cancel.png" alt="닫기 아이콘" />
                     </button>
@@ -99,17 +77,21 @@
                     <div>
                         <div class="popup-text">
                             <input 
+                                id="popup-input"
                                 type="text" 
-                                value="아침 잘 챙겨먹기" 
-                                placeholder="수정할 내용을 입력해주세요."
+                                value="" 
+                                placeholder="내용을 입력해주세요."
                             />
                         </div>
         
                         <div class="popup-btns">
-                            <button class="save-btn">
+                            <button class="save-btn js-save">
                                 저장
                             </button>
-                            <button>
+                            <button class="close-btn js-close">
+                                닫기
+                            </button>
+                            <button class="delete-btn">
                                 삭제
                             </button>
                         </div>
