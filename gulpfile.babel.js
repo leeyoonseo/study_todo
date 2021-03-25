@@ -8,16 +8,7 @@ const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass');
 sass.compiler = require('node-sass');
 
-// Static server
-gulp.task('browser-sync', function() {
-    browserSync.init({
-        server: {
-            baseDir: "./"
-        }
-    });
-});
-
-gulp.task('js', () => {
+gulp.task('js', function(){
     return gulp.src('src/js/*.js')
         .pipe(sourcemaps.init())
         .pipe(babel({
@@ -31,21 +22,39 @@ gulp.task('js', () => {
         .pipe(browserSync.stream());
 });
 
+gulp.task('js-watch', gulp.series('js', function(done){
+    browserSync.reload();
+    done();
+}));
+
 gulp.task('scss', function () {
     return gulp.src('src/scss/*.scss')
         .pipe(sourcemaps.init())
-        .pipe(concat('bundle.min.css'))
         .pipe(sass.sync({
-            outputStyle: 'compressed'
+            outputStyle: 'compressed',
+            sourceComments: true,
         }).on('error', sass.logError))
+        .pipe(concat('bundle.min.css'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('dist/css'))
         .pipe(browserSync.stream());
 });
 
-gulp.task('watch', gulp.series('browser-sync', function() {
-    gulp.watch('src/scss/*.scss', gulp.series('scss'));
-    gulp.watch('src/js/*.js', gulp.series('js'));
+gulp.task('scss-watch', gulp.series('scss', function (done) {
+    browserSync.reload();
+    done();
 }));
 
-gulp.task('default', gulp.series('js', 'scss', 'watch'));
+gulp.task('default', gulp.series('js', function () {
+    // Static server
+    browserSync.init({
+        server: {
+            baseDir: "./"
+        }
+    });
+
+    gulp.watch("src/js/*.js", gulp.series('js-watch'));
+    gulp.watch("src/scss/*.scss", gulp.series('scss-watch'));
+}));
+
+gulp.task('default');
