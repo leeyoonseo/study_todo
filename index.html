@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>to-do-list</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="./dist/css/bundle.min.css">
+    </head>
+    <body>
+        <div id="to-do-list-wrap">
+            <h1><i class="fa fa-square" aria-hidden="true"></i> To Do List</h1>
+            <div id="categories-wrap">
+                <div id="category-search-wrap">
+                    <input type="text" id="category-search-input" />
+                </div>
+                <div id="category-plus-wrap">
+                    <p class="plus-icon">
+                        <span id="category-add-to-do">   
+                            추가 <!--<i class="fa fa-plus" aria-hidden="true"></i>-->
+                        </span>
+                    </p>
+                </div>
+                <h2>Category List</h2>
+                <div id="categories-area">
+                    <form id="category-form" action="" method="post"></form>                 
+                </div>
+            </div>
+            <div class="list-wrap">
+                <span class="vertical-line vertical-line1"></span>
+                <span class="vertical-line vertical-line2"></span>
+                <div id="list-search-wrap">
+                    <input type="text" id="list-search-input" />
+                </div>
+                <div id="list-plus-wrap">
+                    <p class="plus-icon"><span id="list-add-to-do">
+                        추가<!--<i class="fa fa-plus" aria-hidden="true"></i></span>-->
+                    </p>
+                </div>
+                <div id="list-area">
+                    <form id="list-form" action="" method="post"></form>
+                </div>
+            </div>
+        </div>
+
+        <script src="./dist/js/bundle.min.js"></script>
+    </body>
+</html>
