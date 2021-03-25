@@ -3,42 +3,117 @@
     <head>
         <meta charset="utf-8">
         <title>to-do-list</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="./dist/css/bundle.min.css">
     </head>
 
     <body>
-        <section id="to-do-list-wrap">
-            <h1><i class="fa fa-square" aria-hidden="true"></i> To Do List</h1>
-            <div id="categories-wrap">
-                <div id="category-search-wrap">
-                    <input type="text" id="category-search-input" />
+        <section id="to-do-list">
+            <h1>CHECK LIST</h1>
+
+            <div class="list-contents">
+                <h2 class="hidden">리스트 영역</h2>
+
+                <div class="list">
+                    <div>
+                        <input type="checkbox" id="chk-00"/>
+                        <label for="chk-00"></label>
+                        <span class="item-text">아침 잘 챙겨 먹기</span>
+
+                        <button class="copy-btn">
+                            <span class="hidden">글 복사</span>
+                            <img src="public/img/icon_copy.png" alt="복사 아이콘" />
+                        </button>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="chk-00"/>
+                        <label for="chk-00"></label>
+                        <span class="item-text">아침 잘 챙겨 먹기</span>
+
+                        <button class="copy-btn">
+                            <span class="hidden">글 복사</span>
+                            <img src="public/img/icon_copy.png" alt="복사 아이콘" />
+                        </button>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="chk-00"/>
+                        <label for="chk-00"></label>
+                        <span class="item-text">아침 잘 챙겨 먹기</span>
+
+                        <button class="copy-btn">
+                            <span class="hidden">글 복사</span>
+                            <img src="public/img/icon_copy.png" alt="복사 아이콘" />
+                        </button>
+                    </div>
                 </div>
-                <div id="category-plus-wrap">
-                    <p class="plus-icon">
-                        <span id="category-add-to-do">   
-                            추가 <!--<i class="fa fa-plus" aria-hidden="true"></i>-->
-                        </span>
-                    </p>
+
+                <!-- <div id="categories-wrap">
+                    <div id="category-search-wrap">
+                        <input type="text" id="category-search-input" />
+                    </div>
+                    <div id="category-plus-wrap">
+                        <p class="plus-icon">
+                            <span id="category-add-to-do">   
+                                추가 
+                            </span>
+                        </p>
+                    </div>
+                    <h2>Category List</h2>
+                    <div id="categories-area">
+                        <form id="category-form" action="" method="post"></form>                 
+                    </div>
                 </div>
-                <h2>Category List</h2>
-                <div id="categories-area">
-                    <form id="category-form" action="" method="post"></form>                 
-                </div>
+                <div class="list-wrap">
+                    <span class="vertical-line vertical-line1"></span>
+                    <span class="vertical-line vertical-line2"></span>
+                    <div id="list-search-wrap">
+                        <input type="text" id="list-search-input" />
+                    </div>
+                    <div id="list-plus-wrap">
+                        <p class="plus-icon"><span id="list-add-to-do">
+                            추가
+                        </p>
+                    </div>
+                    <div id="list-area">
+                        <form id="list-form" action="" method="post"></form>
+                    </div>
+                </div> -->
             </div>
-            <div class="list-wrap">
-                <span class="vertical-line vertical-line1"></span>
-                <span class="vertical-line vertical-line2"></span>
-                <div id="list-search-wrap">
-                    <input type="text" id="list-search-input" />
-                </div>
-                <div id="list-plus-wrap">
-                    <p class="plus-icon"><span id="list-add-to-do">
-                        추가<!--<i class="fa fa-plus" aria-hidden="true"></i></span>-->
-                    </p>
-                </div>
-                <div id="list-area">
-                    <form id="list-form" action="" method="post"></form>
+
+            <div class="add-list-btn">
+                <button>
+                    +
+                    <span class="hidden">추가하기</span>
+                </button>
+            </div>
+
+            <div class="popup">
+                <div class="popup-contents">
+                    <h2 class="hidden">팝업</h2>
+                    <button class="popup-close-btn">
+                        <span class="hidden">닫기</span>
+                        <img src="public/img/icon_cancel.png" alt="닫기 아이콘" />
+                    </button>
+    
+                    <div>
+                        <div class="popup-text">
+                            <input 
+                                type="text" 
+                                value="아침 잘 챙겨먹기" 
+                                placeholder="수정할 내용을 입력해주세요."
+                            />
+                        </div>
+        
+                        <div class="popup-btns">
+                            <button class="save-btn">
+                                저장
+                            </button>
+                            <button>
+                                삭제
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
