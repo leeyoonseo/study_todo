@@ -85,9 +85,11 @@ body {
             }
 
             .item-text {
-                padding-left: 25px;
+                margin-left: 25px;
                 display: inline-block;
                 word-break: keep-all;
+                border: none;
+                outline: none;
                 cursor: pointer;
             }
 

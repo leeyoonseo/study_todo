@@ -46,7 +46,7 @@ function createItem(data) {
     const checkboxWrap = document.createElement('div');
     const checkbox = document.createElement('input');
     const label = document.createElement('label');
-    const text = document.createElement('span');
+    const textInput = document.createElement('input');
 
     const copyBtn = document.createElement('button');
     const copyBtnIcon = document.createElement('img');
@@ -59,26 +59,34 @@ function createItem(data) {
     checkboxWrap.appendChild(checkbox);
     checkboxWrap.appendChild(label);
     
-    text.dataset.id = data.id;
-    text.innerText = data.text;
-    text.classList.add('item-text');
+    textInput.dataset.id = data.id;
+    textInput.value = data.text;
+    textInput.setAttribute('readonly', true);
+    textInput.classList.add('item-text');
 
     copyBtnIcon.src = 'public/img/icon_copy.png';
     copyBtn.classList.add('copy-btn');
     copyBtn.appendChild(copyBtnIcon);
 
     wrap.appendChild(checkboxWrap);
-    wrap.appendChild(text);
+    wrap.appendChild(textInput);
     wrap.appendChild(copyBtn);
 
     if (data.isChecked) {
         wrap.classList.add('checked');   
     }
 
-    text.addEventListener('click', ({ target }) => showPopup('edit', target));
+    textInput.addEventListener('click', ({ target }) => showPopup('edit', target));
     checkbox.addEventListener('change', handlerChangeChk);
+    copyBtn.addEventListener('click', copyText);
 
     return wrap;
+}
+
+function copyText(e) {
+    const target = e.target.parentNode.previousSibling;
+    target.select();
+    document.execCommand("copy");
 }
 
 function handlerPopupSave() {
@@ -138,7 +146,7 @@ function editItem() {
     const val = popupInput.value;
     const target = getTargetElement(id);
 
-    target.innerText = val;
+    target.value = val;
 
     todoData.map((v) => {
         if (v.id === Number(id)) {
