@@ -29,6 +29,7 @@ const itemAddButton = document.getElementById('add-btn');
 const popup = document.getElementById('popup');
 const popupCloseButton = document.querySelectorAll('.js-close');
 const popupSaveButton = document.querySelector('.js-save');
+const popupEditButton = document.querySelector('.js-edit');
 const popupInput = document.getElementById('popup-input');
 
 load();
@@ -74,8 +75,9 @@ function createItem(data) {
     const checkbox = document.createElement('input');
     const label = document.createElement('label');
     const text = document.createElement('span');
-    const btn = document.createElement('button');
-    const btnIcon = document.createElement('img');
+
+    const copyBtn = document.createElement('button');
+    const copyBtnIcon = document.createElement('img');
 
     checkbox.type = 'checkbox';
     checkbox.id = 'chk-' + data.id;
@@ -85,20 +87,21 @@ function createItem(data) {
     text.innerText = data.text;
     text.classList.add('item-text');
 
-    btnIcon.src = 'public/img/icon_copy.png';
-    btn.classList.add('copy-btn');
-    btn.appendChild(btnIcon);
+    copyBtnIcon.src = 'public/img/icon_copy.png';
+    copyBtn.classList.add('copy-btn');
+    copyBtn.appendChild(copyBtnIcon);
 
     wrap.appendChild(checkbox);
     wrap.appendChild(label);
     wrap.appendChild(text);
-    wrap.appendChild(btn);
+    wrap.appendChild(copyBtn);
 
     if (data.isChecked) {
         wrap.classList.add('checked');   
     }
 
-    checkbox.addEventListener('change', onChangeCheck);
+    text.addEventListener('click', () => showPopup('edit'));
+    checkbox.addEventListener('change', handlerChangeChk);
 
     return wrap;
 }
@@ -112,7 +115,6 @@ function handlerPopupSave() {
         editItem();
     }
 }
-
 
 function addItem() {
     console.log('addItem');
@@ -147,7 +149,7 @@ function deleteItem() {
 
 }
 
-function onChangeCheck({ target }) {
+function handlerChangeChk({ target }) {
     console.log('onChangeCheck');
 
     const id = Number(target.id.split('chk-')[1]);
@@ -165,6 +167,12 @@ function onChangeCheck({ target }) {
  * @param {string} className - add / edit 
  */
 function showPopup(className) {
+    popupSaveButton.innerText = className === 'add' ? '저장' : '수정';
+
+    if (className === 'edit') {
+        
+    }
+
     popup.classList.add('opened', className);
     popupInput.focus();
 }

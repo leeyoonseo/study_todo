@@ -13,18 +13,7 @@
             <div class="list-contents">
                 <h2 class="hidden">리스트 영역</h2>
 
-                <div id="todo-list" class="list">
-                    <!-- <div>
-                        <input type="checkbox" id="chk-00"/>
-                        <label for="chk-00"></label>
-                        <span class="item-text">아침 잘 챙겨 먹기</span>
-
-                        <button class="copy-btn">
-                            <span class="hidden">글 복사</span>
-                            <img src="public/img/icon_copy.png" alt="복사 아이콘" />
-                        </button>
-                    </div> -->
-                </div>
+                <div id="todo-list" class="list"></div>
 
                 <!-- <div id="categories-wrap">
                     <div id="category-search-wrap">
@@ -85,15 +74,13 @@
                         </div>
         
                         <div class="popup-btns">
+                            <!-- [D] add = 저장 / edit = 수정 -->
                             <button class="save-btn js-save">
                                 저장
                             </button>
-                            <button class="close-btn js-close">
-                                닫기
-                            </button>
-                            <button class="delete-btn">
-                                삭제
-                            </button>
+
+                            <!-- [D] edit일때 노출-->
+                            <button class="delete-btn js-edit">삭제</button>
                         </div>
                     </div>
                 </div>

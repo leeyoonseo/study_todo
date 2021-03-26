@@ -178,14 +178,8 @@ body {
         }
     }
 
-    &.add {
-        .close-btn {
-            display: inline-block;
-        }
-    }
-
     &.edit {
-        .edit-btn {
+        .delete-btn {
             display: inline-block;
         }
     }
