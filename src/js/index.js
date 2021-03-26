@@ -99,7 +99,6 @@ function handlerPopupSave() {
     }
 }
 
-
 function saveStorageData() {
     console.log('saveStorageData');
     const str = JSON.stringify(todoData);
