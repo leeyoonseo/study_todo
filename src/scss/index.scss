@@ -58,6 +58,11 @@ body {
                 padding-top: 10px;
                 border-top: 1px solid $main-light-color;
             }
+            
+            .checkbox-wrap {
+                position: absolute;
+                display: inline-block;
+            }
 
             input[type=checkbox] + label {
 				display: inline-block;
@@ -80,6 +85,9 @@ body {
             }
 
             .item-text {
+                padding-left: 25px;
+                display: inline-block;
+                word-break: keep-all;
                 cursor: pointer;
             }
 

@@ -3,56 +3,32 @@
  * @version 1.1.0
  */
 
-//   /**
-//    * 로컬스토리지에서 사용 할 이름 출력
-//    * @param {string} listType - toDoList , category 구분
-//    */
-//   function getListName(listType) {
-//     return listType === 'toDoList' ? 'my-todo-list' : 'my-category-list';
-//   }
+const TODO_DATA = 'todo_data';
 
-const todoData = [
-    {
-        id: 0,
-        isChecked: true,
-        text: '아침 챙겨먹기',
-    },
-    {
-        id: 1,
-        isChecked: false,
-        text: '퇴근하고 수영가기',
-    },
-];
-
+const todoData = loadStorageData();
 const todoList = document.getElementById('todo-list');
 const itemAddButton = document.getElementById('add-btn');
 const popup = document.getElementById('popup');
 const popupCloseButton = document.querySelectorAll('.js-close');
 const popupSaveButton = document.querySelector('.js-save');
-const popupEditButton = document.querySelector('.js-edit');
+const popupDeleteButton = document.querySelector('.js-delete');
 const popupInput = document.getElementById('popup-input');
 
-load();
+setList(todoData);
 
 itemAddButton.addEventListener('click', () => showPopup('add'));
 
-for (let i = 0; i < popupCloseButton.length; i ++) {
-    popupCloseButton[i].addEventListener('click', hidePopup);
-}
+Array.from(popupCloseButton).map((v) => {
+    v.addEventListener('click', hidePopup);
+});
 
 popupSaveButton.addEventListener('click', handlerPopupSave);
+popupDeleteButton.addEventListener('click', deleteItem);
 popupInput.addEventListener('keypress', ({ key }) => {
     if (key === 'Enter') {
         handlerPopupSave();
     }
 })
-
-
-function load() {
-    // TODO: 로컬스토리지에서 데이터 가져오기
-
-    setList(todoData);
-}
 
 
 function setList(data) {
@@ -65,12 +41,9 @@ function setList(data) {
     });
 }
 
-// function updateList(data) {
-//     console.log('updateList', data);
-// }
-
 function createItem(data) {
     const wrap = document.createElement('div');
+    const checkboxWrap = document.createElement('div');
     const checkbox = document.createElement('input');
     const label = document.createElement('label');
     const text = document.createElement('span');
@@ -82,6 +55,9 @@ function createItem(data) {
     checkbox.id = 'chk-' + data.id;
     checkbox.checked = data.isChecked;
     label.setAttribute('for', 'chk-' + data.id);
+    checkboxWrap.classList.add('checkbox-wrap');
+    checkboxWrap.appendChild(checkbox);
+    checkboxWrap.appendChild(label);
     
     text.dataset.id = data.id;
     text.innerText = data.text;
@@ -91,8 +67,7 @@ function createItem(data) {
     copyBtn.classList.add('copy-btn');
     copyBtn.appendChild(copyBtnIcon);
 
-    wrap.appendChild(checkbox);
-    wrap.appendChild(label);
+    wrap.appendChild(checkboxWrap);
     wrap.appendChild(text);
     wrap.appendChild(copyBtn);
 
@@ -116,17 +91,35 @@ function handlerPopupSave() {
     }
 }
 
+
+function saveStorageData() {
+    console.log('saveStorageData');
+    const str = JSON.stringify(todoData);
+    console.log('str', str);
+    
+    localStorage.setItem(TODO_DATA, str);
+}
+
+function loadStorageData() {
+    const item = localStorage.getItem(TODO_DATA) || '[]';
+    return JSON.parse(item);
+}
+
 function addItem() {
     console.log('addItem');
-    const val = popupInput.value;
     let data = {};
+    const val = popupInput.value;
+    const idx = todoData.length - 1;
 
+    // [D] DB 연동시에는 id 생성하는 부분 삭제
+    const newId = todoData[idx] ? todoData[idx].id + 1 : 0;
+    
     if (!val || !val.trim()) {
         return alert('텍스트를 입력해주세요.');
     }
 
     data = {
-        id: todoData.length,
+        id: newId,
         isChecked: false,
         text: val,
     };
@@ -135,35 +128,53 @@ function addItem() {
 
     todoData.push(data);
     todoList.appendChild(createItem(data));
-    console.log(todoData)
 
     hidePopup();
+    saveStorageData();
 }
 
 function editItem() {
-    const id = Number(popupInput.dataset.id);
+    const id = popupInput.dataset.id;
     const val = popupInput.value;
+    const target = getTargetElement(id);
 
-    console.log('val', val, id);
+    target.innerText = val;
 
     todoData.map((v) => {
-        if (v.id === id) {
-            console.log(v)
+        if (v.id === Number(id)) {
             v.text = val;
         }
     });
 
-    setList(todoData);
     hidePopup();
+    saveStorageData();
 }
 
 function deleteItem() {
+    const id = popupInput.dataset.id;
+    const target = getTargetElement(id).parentNode;
 
+    console.log('target', target.parentNode.removeChild(target));
+
+    todoData.map((v, i) => {
+        if (v.id === Number(id)) {
+            todoData.splice(i, 1);
+        }
+    });
+
+    console.log('todo', todoData)
+    hidePopup();
+    saveStorageData();
+}
+
+function getTargetElement(id) {
+    const targets = document.querySelectorAll('.item-text');
+
+    return Array.from(targets)
+                .filter((v) => v.dataset.id === id)[0];
 }
 
 function handlerChangeChk({ target }) {
-    console.log('onChangeCheck');
-
     const id = Number(target.id.split('chk-')[1]);
     const targetData = todoData.find((v) => v.id === id);
 
@@ -172,6 +183,7 @@ function handlerChangeChk({ target }) {
     targetData.isChecked = !targetData.isChecked; 
 
     parentNode.classList.toggle('checked', targetData.isChecked);
+    saveStorageData();
 }
 
 /**
