@@ -57,7 +57,6 @@ function load() {
 
 function setList(data) {
     if (todoList.childElementCount >= 1 ) {
-        console.log('있다.')
         todoList.innerHTML = '';
     }
 
@@ -84,6 +83,7 @@ function createItem(data) {
     checkbox.checked = data.isChecked;
     label.setAttribute('for', 'chk-' + data.id);
     
+    text.dataset.id = data.id;
     text.innerText = data.text;
     text.classList.add('item-text');
 
@@ -100,7 +100,7 @@ function createItem(data) {
         wrap.classList.add('checked');   
     }
 
-    text.addEventListener('click', () => showPopup('edit'));
+    text.addEventListener('click', ({ target }) => showPopup('edit', target));
     checkbox.addEventListener('change', handlerChangeChk);
 
     return wrap;
@@ -141,8 +141,20 @@ function addItem() {
 }
 
 function editItem() {
-    console.log('editItem');
-    
+    const id = Number(popupInput.dataset.id);
+    const val = popupInput.value;
+
+    console.log('val', val, id);
+
+    todoData.map((v) => {
+        if (v.id === id) {
+            console.log(v)
+            v.text = val;
+        }
+    });
+
+    setList(todoData);
+    hidePopup();
 }
 
 function deleteItem() {
@@ -166,11 +178,17 @@ function handlerChangeChk({ target }) {
  * 팝업 show
  * @param {string} className - add / edit 
  */
-function showPopup(className) {
+function showPopup(className, target) {
     popupSaveButton.innerText = className === 'add' ? '저장' : '수정';
 
     if (className === 'edit') {
-        
+        if (!target) {
+            console.error('target 이 없습니다.');
+            return;
+        }
+
+        popupInput.dataset.id = target.dataset.id;
+        popupInput.value = target.innerText;
     }
 
     popup.classList.add('opened', className);
@@ -185,7 +203,9 @@ function hidePopup() {
 
     if (popup.classList.contains('edit')) {
         popup.classList.remove('edit');
+        popupInput.removeAttribute('data-id');
     }
 
+    popupInput.value = '';
     popup.classList.remove('opened');
 }
