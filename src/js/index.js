@@ -8,23 +8,28 @@ const TODO_DATA = 'todo_data';
 const todoData = loadStorageData();
 const todoList = document.getElementById('todo-list');
 const itemAddButton = document.getElementById('add-btn');
-const popup = document.getElementById('popup');
-const popupCloseButton = document.querySelectorAll('.js-close');
-const popupSaveButton = document.querySelector('.js-save');
-const popupDeleteButton = document.querySelector('.js-delete');
-const popupInput = document.getElementById('popup-input');
+
+// [D] Light Box
+const lightBox = document.getElementById('light-box');
+const lightBoxCloseBtn = document.querySelectorAll('.js-close');
+const lightBoxSaveBtn = document.querySelector('.js-save');
+const lightBoxDeleteBtn = document.querySelector('.js-delete');
+const lightBoxInput = document.getElementById('light-box-input');
+
+// [D] Toast Popup 
+const toastPopup = document.getElementById('toast-popup');
 
 setList(todoData);
 
-itemAddButton.addEventListener('click', () => showPopup('add'));
+itemAddButton.addEventListener('click', () => showLightBox('add'));
 
-Array.from(popupCloseButton).map((v) => {
-    v.addEventListener('click', hidePopup);
+Array.from(lightBoxCloseBtn).map((v) => {
+    v.addEventListener('click', hideLightBox);
 });
 
-popupSaveButton.addEventListener('click', handlerPopupSave);
-popupDeleteButton.addEventListener('click', deleteItem);
-popupInput.addEventListener('keypress', ({ key }) => {
+lightBoxSaveBtn.addEventListener('click', handlerPopupSave);
+lightBoxDeleteBtn.addEventListener('click', handlerDelete);
+lightBoxInput.addEventListener('keypress', ({ key }) => {
     if (key === 'Enter') {
         handlerPopupSave();
     }
@@ -56,6 +61,9 @@ function createItem(data) {
     checkbox.checked = data.isChecked;
     label.setAttribute('for', 'chk-' + data.id);
     checkboxWrap.classList.add('checkbox-wrap');
+    if (data.isChecked) {
+        checkboxWrap.classList.add('checked');
+    }
     checkboxWrap.appendChild(checkbox);
     checkboxWrap.appendChild(label);
     
@@ -76,26 +84,28 @@ function createItem(data) {
         wrap.classList.add('checked');   
     }
 
-    textInput.addEventListener('click', ({ target }) => showPopup('edit', target));
+    textInput.addEventListener('click', ({ target }) => showLightBox('edit', target));
     checkbox.addEventListener('change', handlerChangeChk);
-    copyBtn.addEventListener('click', copyText);
+    copyBtn.addEventListener('click', handlerCopy);
 
     return wrap;
 }
 
-function copyText(e) {
+function handlerCopy(e) {
     const target = e.target.parentNode.previousSibling;
     target.select();
     document.execCommand("copy");
+
+    showToastPopup('복사 완료');
 }
 
 function handlerPopupSave() {
-    if (popup.classList.contains('add')) {
-        addItem();
+    if (lightBox.classList.contains('add')) {
+        handlerAdd();
     }
 
-    if (popup.classList.contains('edit')) {
-        editItem();
+    if (lightBox.classList.contains('edit')) {
+        handlerEdit();
     }
 }
 
@@ -112,66 +122,84 @@ function loadStorageData() {
     return JSON.parse(item);
 }
 
-function addItem() {
-    console.log('addItem');
-    let data = {};
-    const val = popupInput.value;
+function handlerAdd() {
+    const val = lightBoxInput.value;
     const idx = todoData.length - 1;
 
     // [D] DB 연동시에는 id 생성하는 부분 삭제
-    const newId = todoData[idx] ? todoData[idx].id + 1 : 0;
+    const addId = todoData[idx] ? todoData[idx].id + 1 : 0;
     
     if (!val || !val.trim()) {
         return alert('텍스트를 입력해주세요.');
     }
 
+    addItem(addId, val);
+
+    lightBoxInput.value = '';
+
+    hideLightBox();
+    saveStorageData();
+    showToastPopup('추가 완료');
+}
+
+function handlerEdit() {
+    const id = lightBoxInput.dataset.id;
+    const val = lightBoxInput.value;
+    const target = getTargetElement(id);
+
+    if (!val || !val.trim()) {
+        return alert('텍스트를 입력해주세요.');
+    }
+
+    target.value = val;
+
+    editItem(id, val);
+
+    hideLightBox();
+    saveStorageData();
+    showToastPopup('수정 완료');
+}
+
+function handlerDelete() {
+    const id = lightBoxInput.dataset.id;
+
+    deleteItem(id);
+    hideLightBox();
+    saveStorageData();
+    showToastPopup('삭제 완료');
+}
+
+function addItem(id, val) {
+    let data = {};
+
     data = {
-        id: newId,
+        id: id,
         isChecked: false,
         text: val,
     };
 
-    popupInput.value = '';
-
     todoData.push(data);
     todoList.appendChild(createItem(data));
-
-    hidePopup();
-    saveStorageData();
 }
 
-function editItem() {
-    const id = popupInput.dataset.id;
-    const val = popupInput.value;
-    const target = getTargetElement(id);
-
-    target.value = val;
-
+function editItem(id, val) {
     todoData.map((v) => {
         if (v.id === Number(id)) {
             v.text = val;
         }
     });
-
-    hidePopup();
-    saveStorageData();
 }
 
-function deleteItem() {
-    const id = popupInput.dataset.id;
+function deleteItem(id) {
     const target = getTargetElement(id).parentNode;
 
-    console.log('target', target.parentNode.removeChild(target));
-
+    target.parentNode.removeChild(target);
+    
     todoData.map((v, i) => {
         if (v.id === Number(id)) {
             todoData.splice(i, 1);
         }
     });
-
-    console.log('todo', todoData)
-    hidePopup();
-    saveStorageData();
 }
 
 function getTargetElement(id) {
@@ -193,38 +221,57 @@ function handlerChangeChk({ target }) {
     saveStorageData();
 }
 
+function showToastPopup(message) {
+    console.log('showToastPopup', message);
+
+    toastPopup.innerText = message;
+    toastPopup.classList.add('active');
+
+    setTimeout(() => {
+        closeToastPopup();
+    }, 1000);
+}
+
+function closeToastPopup() {
+    console.log('closeToastPopup');
+    toastPopup.classList.remove('active');
+}
+
 /**
  * 팝업 show
  * @param {string} className - add / edit 
  */
-function showPopup(className, target) {
-    popupSaveButton.innerText = className === 'add' ? '저장' : '수정';
+function showLightBox(className, target) {
+    lightBoxSaveBtn.innerText = className === 'add' ? '저장' : '수정';
 
     if (className === 'edit') {
         if (!target) {
-            console.error('target 이 없습니다.');
-            return;
+            return console.error('target 이 없습니다.');
         }
 
-        popupInput.dataset.id = target.dataset.id;
-        popupInput.value = target.innerText;
+        lightBoxInput.dataset.id = target.dataset.id;
+        lightBoxInput.value = target.value;
     }
 
-    popup.classList.add('opened', className);
-    popupInput.focus();
+    lightBox.classList.add('opened', className);
+    lightBoxInput.focus();
 }
 
 /** 팝업 hide */
-function hidePopup() {
-    if (popup.classList.contains('add')) {
-        popup.classList.remove('add');
+function hideLightBox() {
+    if (lightBox.classList.contains('add')) {
+        lightBox.classList.remove('add');
     }
 
-    if (popup.classList.contains('edit')) {
-        popup.classList.remove('edit');
-        popupInput.removeAttribute('data-id');
+    if (lightBox.classList.contains('edit')) {
+        lightBox.classList.remove('edit');
+        lightBoxInput.removeAttribute('data-id');
     }
 
-    popupInput.value = '';
-    popup.classList.remove('opened');
+    lightBoxInput.value = '';
+    lightBox.classList.remove('opened');
 }
+
+
+// TODO: 
+// -  Empty Data

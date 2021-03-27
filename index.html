@@ -12,40 +12,7 @@
 
             <div class="list-contents">
                 <h2 class="hidden">리스트 영역</h2>
-
                 <div id="todo-list" class="list"></div>
-
-                <!-- <div id="categories-wrap">
-                    <div id="category-search-wrap">
-                        <input type="text" id="category-search-input" />
-                    </div>
-                    <div id="category-plus-wrap">
-                        <p class="plus-icon">
-                            <span id="category-add-to-do">   
-                                추가 
-                            </span>
-                        </p>
-                    </div>
-                    <h2>Category List</h2>
-                    <div id="categories-area">
-                        <form id="category-form" action="" method="post"></form>                 
-                    </div>
-                </div>
-                <div class="list-wrap">
-                    <span class="vertical-line vertical-line1"></span>
-                    <span class="vertical-line vertical-line2"></span>
-                    <div id="list-search-wrap">
-                        <input type="text" id="list-search-input" />
-                    </div>
-                    <div id="list-plus-wrap">
-                        <p class="plus-icon"><span id="list-add-to-do">
-                            추가
-                        </p>
-                    </div>
-                    <div id="list-area">
-                        <form id="list-form" action="" method="post"></form>
-                    </div>
-                </div> -->
             </div>
 
             <div class="add-btn-wrap">
@@ -55,25 +22,25 @@
                 </button>
             </div>
 
-            <div id="popup" class="popup-wrap">
-                <div class="popup-contents">
+            <div id="light-box" class="light-box-wrap">
+                <div class="light-box-contents">
                     <h2 class="hidden">팝업</h2>
-                    <button class="popup-close-btn js-close">
+                    <button class="light-box-close-btn js-close">
                         <span class="hidden">닫기</span>
                         <img src="public/img/icon_cancel.png" alt="닫기 아이콘" />
                     </button>
     
                     <div>
-                        <div class="popup-text">
+                        <div class="light-box-text">
                             <input 
-                                id="popup-input"
+                                id="light-box-input"
                                 type="text" 
                                 value="" 
                                 placeholder="내용을 입력해주세요."
                             />
                         </div>
         
-                        <div class="popup-btns">
+                        <div class="light-box-btns">
                             <!-- [D] add = 저장 / edit = 수정 -->
                             <button class="save-btn js-save">
                                 저장
@@ -86,7 +53,7 @@
                 </div>
             </div>
 
-            <div id="pop-message" class="pop-message">메세지</div>
+            <div id="toast-popup" class="toast-popup">메세지</div>
         </section>
 
         <script src="./dist/js/bundle.min.js"></script>
