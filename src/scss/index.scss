@@ -40,12 +40,7 @@ body {
         box-sizing: border-box;
         overflow-y: auto;
 
-        .list {
-
-            .checked + .item-text {
-                    text-decoration: line-through $main-color;
-            }
-
+        .list-wrap {
             & > div {
                 position: relative;
                 padding-bottom: 10px;
@@ -91,7 +86,8 @@ body {
                 cursor: pointer;
             }
 
-            .copy-btn {
+            .item-copy-btn,
+            .delete-btn {
                 position: absolute;
                 right: 0;
                 top: 50%;
@@ -100,25 +96,88 @@ body {
                 height: 13px;
                 transform: translateY(-50%);
             }
+
+            .delete-btn {
+                display: none;
+            }
+
+            .empty-icon {
+                padding: 0;
+                text-align: center;
+
+                span {
+                    display: block;
+                    font-size: 20px;
+                    color: $main-color;
+                    font-weight: 700;
+                }
+            }
+
+            &.mode-delete {
+                .list-item {
+                    cursor: pointer;
+                }   
+
+                .checkbox-wrap, 
+                .item-copy-btn {
+                    display: none;
+                }
+
+                .item-text {
+                    margin: 0;
+                    color: red;
+                }
+            }
+
+            &:not(.mode-delete) {
+                .checked + .item-text {
+                    text-decoration: line-through $main-color;
+                }
+            }
         }
     }
 
-    .add-btn-wrap {
+    .list-btns {
         width: 100%;
         height: 40px;
         text-align: center;
         box-sizing: border-box;
 
+        .list-delete-mode {
+            display: none;
+        }
+
+        &.active {
+            .list-default {
+                display: none;
+            }
+
+            .list-delete-mode {
+                display: block;
+            }
+        }
+
         button {
             padding: 0;
             width: 30px;
             height: 30px;
-            font-size: 30px;
             line-height: 1;
-            color: $main-color;
             border: 2px solid $main-color;
             border-radius: 50%;
             box-sizing: border-box;
+        }
+
+        img { 
+            margin: 0 auto;
+            width: 50%;
+            height: 50%;
+            vertical-align: middle;
+        }
+        
+        img.delete-icon,
+        img.close-icon {
+            width: 40%;
+            height: 40%;
         }
     }
 }

@@ -5,48 +5,119 @@
 
 const TODO_DATA = 'todo_data';
 
-const todoData = loadStorageData();
+let todoData = loadStorageData();
 const todoList = document.getElementById('todo-list');
-const itemAddButton = document.getElementById('add-btn');
+const listAddBtn = document.getElementById('add-btn');
+const listDeleteBtn = document.getElementById('delete-btn');
+const listDeleteCloseBtn = document.getElementById('close-btn');
+const listDeleteSaveBtn = document.getElementById('delete-save-btn');
 
 // [D] Light Box
 const lightBox = document.getElementById('light-box');
 const lightBoxCloseBtn = document.querySelectorAll('.js-close');
-const lightBoxSaveBtn = document.querySelector('.js-save');
-const lightBoxDeleteBtn = document.querySelector('.js-delete');
+const lightBoxSaveBtn = document.querySelector('.js-save-item');
+const lightBoxDeleteBtn = document.querySelector('.js-delete-item');
 const lightBoxInput = document.getElementById('light-box-input');
 
 // [D] Toast Popup 
 const toastPopup = document.getElementById('toast-popup');
 
-setList(todoData);
+listAddBtn.addEventListener('click', () => showLightBox('add'));
+listDeleteBtn.addEventListener('click', () => {
+    toggleDeleteMode();
+});
 
-itemAddButton.addEventListener('click', () => showLightBox('add'));
+listDeleteCloseBtn.addEventListener('click', () => {
+    toggleDeleteMode();
+    setList(todoData);
+});
+
+listDeleteSaveBtn.addEventListener('click', handlerDeleteSave);
+
+function handlerDeleteSave() {
+    const targets = document.querySelectorAll('.item-text');
+    let temp = [];
+
+    for(let i = 0; i < todoData.length; i++) {
+        for (let j = 0; j < targets.length; j++) {
+            if(todoData[i].id === Number(targets[j].dataset.id)) {
+                temp.push(todoData[i]);
+                break;
+            }
+        }
+    }
+
+    todoData = temp;
+    setList(todoData);
+    toggleDeleteMode();
+    saveStorageData();
+}
+
+function toggleDeleteMode() {
+    const target = document.querySelector('.js-list-btns');
+    target.classList.toggle('active', !target.classList.contains('active'));
+    todoList.classList.toggle('mode-delete', target.classList.contains('active'));
+}
 
 Array.from(lightBoxCloseBtn).map((v) => {
     v.addEventListener('click', hideLightBox);
 });
 
-lightBoxSaveBtn.addEventListener('click', handlerPopupSave);
-lightBoxDeleteBtn.addEventListener('click', handlerDelete);
+lightBoxSaveBtn.addEventListener('click', handlerLightBoxSave);
+lightBoxDeleteBtn.addEventListener('click', handlerLightBoxDelete);
 lightBoxInput.addEventListener('keypress', ({ key }) => {
     if (key === 'Enter') {
-        handlerPopupSave();
+        handlerLightBoxSave();
     }
 })
 
+// [D] init
+setList(todoData);
 
 function setList(data) {
-    if (todoList.childElementCount >= 1 ) {
-        todoList.innerHTML = '';
-    }
+    todoList.innerHTML = '';
+
+    setEmptyData();
 
     data.map((v) => {
         todoList.appendChild(createItem(v));
     });
 }
 
+function setEmptyData() {
+    if (todoData < 1) {
+        createEmptyData();
+    } else {
+        removeEmptyData();
+    }
+}
+function createEmptyData() {
+    const icon = document.createElement('img');
+    const text = document.createElement('span');
+    const iconWrap = document.createElement('div');
+
+    icon.src = 'public/img/icon_cloud-pink.png';
+    text.innerText = 'No data';
+
+    iconWrap.classList.add('empty-icon');
+    iconWrap.id = 'js-empty-icon';
+
+    iconWrap.appendChild(icon);
+    iconWrap.appendChild(text);
+    todoList.appendChild(iconWrap);
+}
+
+function removeEmptyData(){
+    const target = document.getElementById('js-empty-icon');
+
+    if (!target) return;
+
+    target.parentNode.removeChild(target);
+}
+
 function createItem(data) {
+    const { id, isChecked, text } = data;
+
     const wrap = document.createElement('div');
     const checkboxWrap = document.createElement('div');
     const checkbox = document.createElement('input');
@@ -57,76 +128,93 @@ function createItem(data) {
     const copyBtnIcon = document.createElement('img');
 
     checkbox.type = 'checkbox';
-    checkbox.id = 'chk-' + data.id;
-    checkbox.checked = data.isChecked;
-    label.setAttribute('for', 'chk-' + data.id);
+    checkbox.id = 'chk-' + id;
+    checkbox.checked = isChecked;
+    label.setAttribute('for', 'chk-' + id);
     checkboxWrap.classList.add('checkbox-wrap');
-    if (data.isChecked) {
-        checkboxWrap.classList.add('checked');
-    }
-    checkboxWrap.appendChild(checkbox);
-    checkboxWrap.appendChild(label);
+    isChecked && checkboxWrap.classList.add('checked');
     
-    textInput.dataset.id = data.id;
-    textInput.value = data.text;
+    textInput.dataset.id = id;
+    textInput.value = text;
     textInput.setAttribute('readonly', true);
     textInput.classList.add('item-text');
 
     copyBtnIcon.src = 'public/img/icon_copy.png';
-    copyBtn.classList.add('copy-btn');
-    copyBtn.appendChild(copyBtnIcon);
+    copyBtn.classList.add('item-copy-btn');
 
+    wrap.classList.add('list-item');
+    
+    checkboxWrap.appendChild(checkbox);
+    checkboxWrap.appendChild(label);
+    copyBtn.appendChild(copyBtnIcon);
     wrap.appendChild(checkboxWrap);
     wrap.appendChild(textInput);
     wrap.appendChild(copyBtn);
 
-    if (data.isChecked) {
-        wrap.classList.add('checked');   
-    }
+    textInput.addEventListener('click', ({ target }) => {
+        if (todoList.classList.contains('mode-delete')) return;
+        showLightBox('edit', target);
+    });
 
-    textInput.addEventListener('click', ({ target }) => showLightBox('edit', target));
+    wrap.addEventListener('click', (e) => {
+        if (!todoList.classList.contains('mode-delete')) return;
+        handlerDelete(e);
+    });
+
     checkbox.addEventListener('change', handlerChangeChk);
     copyBtn.addEventListener('click', handlerCopy);
 
     return wrap;
 }
 
+function handlerDelete(e) {
+    let target = e.target;
+
+    if (target.nodeName !== 'DIV') {
+        target = target.parentNode;
+    }
+
+    // const input = Array.from(target.childNodes).filter((v) => v.nodeName === 'INPUT')[0];
+    // const id = input.dataset.id;
+
+    target.parentNode.removeChild(target);
+}
+
 function handlerCopy(e) {
-    const target = e.target.parentNode.previousSibling;
+    let parent = e.target.parentNode;
+
+    if (parent.nodeName !== 'DIV') {
+        parent = parent.parentNode;
+    }
+
+    const target = Array.from(parent.childNodes).filter((v) => v.nodeName === 'INPUT')[0];
     target.select();
     document.execCommand("copy");
 
     showToastPopup('복사 완료');
 }
 
-function handlerPopupSave() {
+function handlerLightBoxSave() {
     if (lightBox.classList.contains('add')) {
         handlerAdd();
     }
 
     if (lightBox.classList.contains('edit')) {
-        handlerEdit();
+        handlerLightBoxEdit();
     }
 }
 
 function saveStorageData() {
-    console.log('saveStorageData');
-    const str = JSON.stringify(todoData);
-    console.log('str', str);
-    
-    localStorage.setItem(TODO_DATA, str);
+    localStorage.setItem(TODO_DATA, JSON.stringify(todoData));
 }
 
 function loadStorageData() {
-    const item = localStorage.getItem(TODO_DATA) || '[]';
-    return JSON.parse(item);
+    return JSON.parse(localStorage.getItem(TODO_DATA) || '[]');
 }
 
 function handlerAdd() {
     const val = lightBoxInput.value;
     const idx = todoData.length - 1;
-
-    // [D] DB 연동시에는 id 생성하는 부분 삭제
     const addId = todoData[idx] ? todoData[idx].id + 1 : 0;
     
     if (!val || !val.trim()) {
@@ -140,9 +228,10 @@ function handlerAdd() {
     hideLightBox();
     saveStorageData();
     showToastPopup('추가 완료');
+    setEmptyData();
 }
 
-function handlerEdit() {
+function handlerLightBoxEdit() {
     const id = lightBoxInput.dataset.id;
     const val = lightBoxInput.value;
     const target = getTargetElement(id);
@@ -160,13 +249,14 @@ function handlerEdit() {
     showToastPopup('수정 완료');
 }
 
-function handlerDelete() {
+function handlerLightBoxDelete() {
     const id = lightBoxInput.dataset.id;
 
     deleteItem(id);
     hideLightBox();
     saveStorageData();
     showToastPopup('삭제 완료');
+    setEmptyData();
 }
 
 function addItem(id, val) {
@@ -192,7 +282,6 @@ function editItem(id, val) {
 
 function deleteItem(id) {
     const target = getTargetElement(id).parentNode;
-
     target.parentNode.removeChild(target);
     
     todoData.map((v, i) => {
@@ -214,6 +303,7 @@ function handlerChangeChk({ target }) {
     const targetData = todoData.find((v) => v.id === id);
 
     if (!targetData) return;
+
     const { parentNode } = target;
     targetData.isChecked = !targetData.isChecked; 
 
@@ -222,8 +312,6 @@ function handlerChangeChk({ target }) {
 }
 
 function showToastPopup(message) {
-    console.log('showToastPopup', message);
-
     toastPopup.innerText = message;
     toastPopup.classList.add('active');
 
@@ -233,7 +321,7 @@ function showToastPopup(message) {
 }
 
 function closeToastPopup() {
-    console.log('closeToastPopup');
+    toastPopup.innerText = '';
     toastPopup.classList.remove('active');
 }
 

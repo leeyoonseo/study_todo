@@ -12,14 +12,29 @@
 
             <div class="list-contents">
                 <h2 class="hidden">리스트 영역</h2>
-                <div id="todo-list" class="list"></div>
+                <div id="todo-list" class="list-wrap"></div>
             </div>
 
-            <div class="add-btn-wrap">
-                <button id="add-btn">
-                    +
-                    <span class="hidden">추가하기</span>
-                </button>
+            <div class="list-btns js-list-btns"> 
+                <div class="list-default">
+                    <button id="add-btn"> 
+                        <img src="public/img/icon_plus_pink.png" alt="추가 아이콘" />
+                    </button>
+                    
+                    <button id="delete-btn">
+                        <img class="delete-icon" src="public/img/icon_close_pink.png" alt="삭제 아이콘" />
+                    </button>              
+                </div>
+    
+                <div class="list-delete-mode">
+                    <button id="close-btn">
+                        <img class="close-icon" src="public/img/icon_close_pink.png" alt="닫기 아이콘" />
+                    </button>
+    
+                    <button id="delete-save-btn">
+                        <img class="check-icon" src="public/img/icon_check_pink.png" alt="체크 아이콘" />
+                    </button>
+                </div>
             </div>
 
             <div id="light-box" class="light-box-wrap">
@@ -42,12 +57,12 @@
         
                         <div class="light-box-btns">
                             <!-- [D] add = 저장 / edit = 수정 -->
-                            <button class="save-btn js-save">
+                            <button class="save-btn js-save-item">
                                 저장
                             </button>
 
                             <!-- [D] edit일때만 노출-->
-                            <button class="delete-btn js-delete">삭제</button>
+                            <button class="delete-btn js-delete-item">삭제</button>
                         </div>
                     </div>
                 </div>
