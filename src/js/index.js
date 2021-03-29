@@ -196,7 +196,7 @@ function createItemElements(data) {
     textInput.setAttribute('readonly', true);
     textInput.classList.add('item-text');
 
-    copyBtnIcon.src = 'public/img/icon_copy.png';
+    copyBtnIcon.src = '../img/icon_copy.png';
     copyBtn.classList.add('item-copy-btn');
 
     wrap.classList.add('list-item');
@@ -285,7 +285,7 @@ function createEmptyData() {
     const text = document.createElement('span');
     const iconWrap = document.createElement('div');
 
-    icon.src = 'public/img/icon_cloud-pink.png';
+    icon.src = '../img/icon_cloud-pink.png';
     text.innerText = 'No data';
 
     iconWrap.classList.add('empty-icon');

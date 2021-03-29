@@ -5,6 +5,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const browserSync = require('browser-sync').create();
+const htmlmin = require('gulp-htmlmin');
+const image = require('gulp-image');
 const sass = require('gulp-sass');
 sass.compiler = require('node-sass');
 
@@ -45,16 +47,40 @@ gulp.task('scss-watch', gulp.series('scss', function (done) {
     done();
 }));
 
-gulp.task('default', gulp.series('js', function () {
+gulp.task('htmlmin', () => {
+    return gulp.src('src/index.html')
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('htmlmin-watch', gulp.series('htmlmin', function(done){
+    browserSync.reload();
+    done();
+}));
+
+gulp.task('image', function () {
+    return gulp.src('src/img/*')
+    .pipe(image())
+    .pipe(gulp.dest('dist/img'));
+});
+
+gulp.task('image-watch', gulp.series('image', function(done){
+    browserSync.reload();
+    done();
+}));
+
+gulp.task('default', gulp.series('js', 'scss', 'htmlmin', 'image', function () {
     // Static server
     browserSync.init({
         server: {
-            baseDir: "./"
+            baseDir: './dist'
         }
     });
 
-    gulp.watch("src/js/*.js", gulp.series('js-watch'));
-    gulp.watch("src/scss/*.scss", gulp.series('scss-watch'));
+    gulp.watch('src/js/*.js', gulp.series('js-watch'));
+    gulp.watch('src/scss/*.scss', gulp.series('scss-watch'));
+    gulp.watch('src/index.html', gulp.series('htmlmin-watch'));
+    gulp.watch('src/img/*', gulp.series('image-watch'));
 }));
 
 gulp.task('default');
