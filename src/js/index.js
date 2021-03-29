@@ -66,11 +66,16 @@ function onClickItemCopy(e) {
         parent = parent.parentNode;
     }
 
-    const target = Array.from(parent.childNodes).filter((v) => v.nodeName === 'INPUT')[0];
-    target.select();
+    const target = Array.from(parent.childNodes).filter((v) => v.classList.contains('item-text'))[0];
+    const tempElem = document.createElement('textarea');
+    
+    document.body.appendChild(tempElem);
+    tempElem.value = target.innerText;
+    tempElem.select();
     document.execCommand("copy");
 
     showToastPopup('복사 완료');
+    document.body.removeChild(tempElem);
 }
 
 function onClickLightBoxSave() {
@@ -111,7 +116,7 @@ function handlerEditItem() {
         return alert('텍스트를 입력해주세요.');
     }
 
-    target.value = val;
+    target.innerText = val;
 
     editItem(id, val);
 
@@ -179,7 +184,7 @@ function createItemElements(data) {
     const checkboxWrap = document.createElement('div');
     const checkbox = document.createElement('input');
     const label = document.createElement('label');
-    const textInput = document.createElement('input');
+    const todoText = document.createElement('span');
 
     const copyBtn = document.createElement('button');
     const copyBtnIcon = document.createElement('img');
@@ -191,10 +196,10 @@ function createItemElements(data) {
     checkboxWrap.classList.add('checkbox-wrap');
     isChecked && checkboxWrap.classList.add('checked');
     
-    textInput.dataset.id = id;
-    textInput.value = text;
-    textInput.setAttribute('readonly', true);
-    textInput.classList.add('item-text');
+    todoText.dataset.id = id;
+    todoText.innerText = text;
+    todoText.setAttribute('readonly', true);
+    todoText.classList.add('item-text');
 
     copyBtnIcon.src = '../img/icon_copy.png';
     copyBtn.classList.add('item-copy-btn');
@@ -205,10 +210,10 @@ function createItemElements(data) {
     checkboxWrap.appendChild(label);
     copyBtn.appendChild(copyBtnIcon);
     wrap.appendChild(checkboxWrap);
-    wrap.appendChild(textInput);
+    wrap.appendChild(todoText);
     wrap.appendChild(copyBtn);
 
-    textInput.addEventListener('click', ({ target }) => {
+    todoText.addEventListener('click', ({ target }) => {
         if (todoList.classList.contains('mode-delete')) return;
         showLightBox('edit', target);
     });
@@ -347,7 +352,7 @@ function showLightBox(className, target) {
         }
 
         lightBoxInput.dataset.id = target.dataset.id;
-        lightBoxInput.value = target.value;
+        lightBoxInput.value = target.innerText;
     }
 
     lightBox.classList.add('opened', className);
