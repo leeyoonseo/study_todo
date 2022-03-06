@@ -29,22 +29,6 @@ export const storeTodo = defineStore("todo", {
       return length === 0 ? 0 : lastId + 1;
     },
   },
-  actions: {
-    addItem(item: TodoItem) {
-      this.todoList.push(item);
-    },
-    changeStatus({
-      id,
-      status,
-    }: {
-      id: TodoItem["id"];
-      status: TodoItem["status"];
-    }) {
-      this.todoList[id].status = status;
-    },
-    removeItem(id: TodoItem["id"]) {
-      this.todoList.splice(id, 1);
-    },
-  },
+  actions: {},
   debounce: {},
 });

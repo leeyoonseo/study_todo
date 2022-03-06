@@ -38,10 +38,15 @@ const props = defineProps<Props>();
 
 const handleChangeStatus = () => {
   const changeStatus = props.status === "active" ? "clear" : "active";
-  store.changeStatus({ id: props.id, status: changeStatus });
+  store.$patch(() => {
+    store.todoList[props.id].status = changeStatus;
+  });
 };
+
 const handleRemoveItem = () => {
-  store.removeItem(props.id);
+  store.$patch(() => {
+    store.todoList.splice(props.id, 1);
+  });
 };
 </script>
 <style lang="scss">

@@ -14,7 +14,6 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { TodoItem } from "@/store/index.interface";
 import { storeTodo } from "@/store/modules/todo";
 
 const store = storeTodo();
@@ -22,11 +21,13 @@ const inputValue = ref("");
 const handleAddItem = (event: Event) => {
   inputValue.value = (event.target as HTMLInputElement).value;
 
-  store.addItem({
-    id: store.createId,
-    title: inputValue.value,
-    status: "active",
-  } as TodoItem);
+  store.$patch(() => {
+    store.todoList.push({
+      id: store.createId,
+      title: inputValue.value,
+      status: "active",
+    });
+  });
 
   inputValue.value = "";
 };
