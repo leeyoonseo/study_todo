@@ -32,7 +32,8 @@ watch(
         return item.status === newVal;
       });
     }
-  }
+  },
+  { deep: true }
 );
 </script>
 <style lang="scss"></style>
