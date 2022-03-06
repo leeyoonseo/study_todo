@@ -1,7 +1,7 @@
 # study_todo
 
-TODO: 
-- components 하위 구조 
-- common, template, layout
-
-- bootstrap 사용
+학습 목적
+vue3 script-setup
+typescript
+pinia
+bootstrap
