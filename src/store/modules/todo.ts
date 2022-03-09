@@ -33,6 +33,7 @@ export const storeTodo = defineStore("todo", {
       /* eslint-disable @typescript-eslint/ban-ts-comment */
       // @ts-ignore
       return this.todoList;
+      // JSON.parse(JSON.stringify(this.todoList))
     },
   },
   actions: {},

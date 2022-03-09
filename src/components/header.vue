@@ -21,7 +21,6 @@ export default {
   name: "AppHeader",
 };
 </script>
-<script lang="ts" setup></script>
 <style lang="scss">
 .header {
   padding: 0;
